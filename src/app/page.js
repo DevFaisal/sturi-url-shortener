@@ -32,8 +32,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex justify-between items-center bg-gradient-to-br from-indigo-100 via-white to-purple-100">
-      <div className="container mx-auto px-4 py-6 sm:py-10">
+    <div className="min-h-screen h-screen  flex justify-center items-center bg-gradient-to-br from-red-100 via-white to-blue-100">
+      <div className="  px-4 py-6 sm:py-10">
         {/* Hero Section */}
         <div className="text-center mb-8 sm:mb-36">
           <div className="flex items-center justify-center mb-4 sm:mb-6">
@@ -159,6 +159,18 @@ export default function Home() {
             </p>
           </div>
         </div>
+        {/* Footer */}
+        <footer className="w-full  text-center py-4 text-sm text-gray-600">
+          Developed by Faisal Farooq -{" "}
+          <a
+            href="https://www.linkedin.com/in/dev-faisal/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-600 hover:text-indigo-700 underline"
+          >
+            LinkedIn Profile
+          </a>
+        </footer>
       </div>
     </div>
   );
