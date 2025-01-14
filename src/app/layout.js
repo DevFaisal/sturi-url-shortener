@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Sturi URL - Transform your long URLs into short",
-  description: "AI-powered healthcare",
+  title: "Sturi URL",
+  description: "Transform your long URLs into short",
 };
 
 export default function RootLayout({ children }) {
