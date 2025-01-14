@@ -4,9 +4,6 @@ import connectToDatabase from "@/db/connection";
 import ShortUniqueId from "short-unique-id";
 import URL from "@/models/url";
 
-
-
-
 export async function createURL({ url }) {
   if (!url) {
     return {
@@ -29,9 +26,10 @@ export async function createURL({ url }) {
       };
     }
   } catch (error) {
+    console.log(error);
     return {
       success: false,
-      data: error,
+      data: "Something went wrong",
     };
   }
 }

@@ -1,10 +1,14 @@
 import "./globals.css";
 
+export const metadata = {
+  title: "Sturi URL - Transform your long URLs into short",
+  description: "AI-powered healthcare",
+};
+
 export default function RootLayout({ children }) {
-  // Sturi URL
   return (
     <html>
-      <body >{children}</body>
+      <body>{children}</body>
     </html>
   );
 }
