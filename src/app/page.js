@@ -1,101 +1,136 @@
-import Image from "next/image";
+"use client";
+import { createURL } from "@/actions/createURL";
+import { useState } from "react";
+import { Link2, ArrowRight, ExternalLink } from "lucide-react";
+import validUrl from "valid-url";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [url, setUrl] = useState("");
+  const [shortenedUrl, setShortenedUrl] = useState("");
+  const [error, setError] = useState("");
+  const CLIENT_URL = process.env.NEXT_PUBLIC_CLIENT_URL;
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (checkValidUrl(url)) {
+      const result = await createURL({ url });
+      if (result.success) {
+        return setShortenedUrl(CLIENT_URL + "/".concat(result.data));
+      }
+      setError(result.data);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex justify-between items-center bg-gradient-to-br from-indigo-100 via-white to-purple-100">
+      <div className="container mx-auto px-4 py-10">
+        {/* Hero Section */}
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center mb-6">
+            <Link2 className="h-12 w-12 text-indigo-600" />
+          </div>
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">
+            Sturi URL Shortener
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Transform your long URLs into short, memorable links in seconds
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* URL Shortener Form */}
+        <div className="max-w-3xl mx-auto">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="flex gap-2">
+              <div className="flex flex-col w-full">
+                <input
+                  type="url"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder="Paste your long URL here..."
+                  className="flex-1 px-6 py-4 rounded-lg border-2 border-indigo-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-gray-700 text-lg transition-all duration-200"
+                  required
+                />
+                <span className="text-red-500 italic font-semibold text-sm">
+                  {error}
+                </span>
+              </div>
+
+              <button
+                type="submit"
+                className="px-8 py-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 flex items-center gap-2"
+              >
+                Shorten <ArrowRight className="h-5 w-5" />
+              </button>
+            </div>
+          </form>
+
+          {/* Result Section */}
+          {shortenedUrl && (
+            <div className="mt-8 p-6 bg-white rounded-lg shadow-lg border border-indigo-100">
+              <h2 className="text-lg font-semibold text-gray-700 mb-3">
+                Your shortened URL is ready!
+              </h2>
+              <div className="flex items-center gap-3">
+                <input
+                  type="text"
+                  value={shortenedUrl}
+                  readOnly
+                  className="flex-1 px-4 py-2 bg-gray-50 rounded border border-gray-200"
+                />
+                <button
+                  onClick={() => navigator.clipboard.writeText(shortenedUrl)}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors duration-200"
+                >
+                  Copy
+                </button>
+                <a
+                  href={shortenedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 text-indigo-600 hover:text-indigo-700"
+                >
+                  <ExternalLink className="h-5 w-5" />
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Features Section */}
+        <div className="mt-24 grid md:grid-cols-3 gap-8 text-center">
+          <div className="p-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
+              Lightning Fast
+            </h3>
+            <p className="text-gray-600">
+              Generate shortened URLs instantly with our optimized service
+            </p>
+          </div>
+          <div className="p-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
+              Secure & Reliable
+            </h3>
+            <p className="text-gray-600">
+              Your links are safe with us and available 24/7
+            </p>
+          </div>
+          <div className="p-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
+              Easy to Share
+            </h3>
+            <p className="text-gray-600">
+              Perfect for social media, emails, and messages
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
+}
+
+function checkValidUrl(url) {
+  if (validUrl.isUri(url) != undefined) {
+    return true;
+  }
+  return false;
 }
